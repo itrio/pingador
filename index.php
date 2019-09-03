@@ -11,15 +11,17 @@
 <body>
 
 <div id="divPrincipal">
-    <nav>
-        <div class="nav-wrapper blue">
-            <a href="#" class="brand-logo center">Pingador</a>
-            <ul id="nav-mobile" class="right">
-                <li><a href="#!" title="Configurações" onclick='btnConfigClick();' style="height: 100%;"><img src="ico/settings-white.png" width="30" style="margin-top: 18px;"></a></li>
-                <li><a href="#!" title="Baixar relatório" style="height: 100%;"><img src="ico/file-download-white.png" width="30" style="margin-top: 18px;"></a></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="navbar-fixed" id="fixadorNav">
+        <nav>
+            <div class="nav-wrapper blue">
+                <a href="#" class="brand-logo center">Pingador</a>
+                <ul id="nav-mobile" class="right">
+                    <li><a href="#!" title="Configurações" onclick='btnConfigClick();' style="height: 100%;"><img src="ico/settings-white.png" width="30" style="margin-top: 18px;"></a></li>
+                    <li><a href="#!" title="Baixar relatório" onclick="btnDownloadClick();" style="height: 100%;"><img src="ico/file-download-white.png" width="30" style="margin-top: 18px;"></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
 
     <div class="container">
         <div class="row">
@@ -77,6 +79,11 @@
         </form>
     </li>
 </ul>
+
+<!--Formulário Oculto-->
+<form id="formExport" name="formExport" method="post" action="export.php">
+    <input type="hidden" id="txtLinhas" name="txtLinhas">
+</form>
 
 </body>
 
@@ -265,10 +272,12 @@
         if($('#divPrincipal').hasClass("divRecolhida")){
             $('#slide-configs').hide();
             $('#divPrincipal').removeClass("divRecolhida");
+            $('#fixadorNav').addClass("navbar-fixed");
         }
         else{
             $('#slide-configs').show();
             $('#divPrincipal').addClass("divRecolhida");
+            $('#fixadorNav').removeClass("navbar-fixed");
         }
     }
 
@@ -286,6 +295,40 @@
             setCookie("limiteConexoes", 30, 32000000);
         }
         return limiteConexoes;
+    }
+    
+    function btnDownloadClick() {
+        //Verifica se há alguma linha pendente
+        var linhaPendente = false;
+        var linhas = $("#linhasIPs > tr");
+        jQuery.each(linhas, function (indice, elemento) {
+            var colunas = elemento.children;
+            if($(colunas[2]).html() == "aguardando" || $(colunas[2]).html() == "conectando..."){
+                linhaPendente = true;
+            }
+        });
+
+        if(linhaPendente){
+            M.toast({html: 'Aguarde todas as linhas serem testadas e clique novamente!'});
+            return false;
+        }
+        else if($("#linhasIPs > tr").length == 0){
+            M.toast({html: 'Não há nada para exportar!'});
+            return false;
+        }
+        else{
+            var linhas = $("#linhasIPs > tr");
+            var strLinhas = "";
+
+            jQuery.each(linhas, function (indice, elemento) {
+                var colunas = elemento.children;
+
+                strLinhas += $(colunas[0]).html()+","+$(colunas[1]).html()+","+$(colunas[2]).html()+","+$(colunas[3]).html()+";";
+            });
+
+            $("#txtLinhas").val(strLinhas);
+            $("#formExport").submit();
+        }
     }
 </script>
 
