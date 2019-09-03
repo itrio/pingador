@@ -1,6 +1,9 @@
 <html>
 <head>
     <link rel="stylesheet" href="vendor/materialize/css/materialize.min.css">
+    <link rel="shortcut icon" href="ico/ico.png" id="favicon" />
+
+    <title>Pingador - Utilitário ICMP</title>
 
     <style type="text/css">
         .divRecolhida{
