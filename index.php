@@ -31,7 +31,7 @@
             <form class="col s12">
                 <div class="row">
                     <div class="col s12">
-                        <label for="textarea1">Insira os IPs que deseja pingar. Coloque um IP em cada linha.<br></label>
+                        <label for="textarea1">Insira os IPs ou domínios que deseja pingar. Coloque um IP em cada linha.<br></label>
                         <textarea id="txtIPs" rows="15"></textarea>
                     </div>
                     <div class="col s12">
@@ -70,11 +70,7 @@
             <div class="divider"></div>
         </div></li>
     <li class="container">
-        <form action="#"><!--
-            <span>Número máximo de conexões:</span>
-            <p class="range-field">
-                <input type="range" id="test5" min="1" max="100" />
-            </p>-->
+        <form action="#">
             <div class="input-field col s12">
                 <input id="limitConex" type="number" min="1" max="100" value="30" onchange="atualizaLimitConn();" class="center-align">
                 <label for="limitConex" class="center-align">número máximo de conexões</label><label></label>
