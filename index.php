@@ -93,7 +93,7 @@
             "            <td>"+IP+"</td>\n" +
             "            <td>aguardando</td>\n" +
             "            <td>"+preloader+"</td>\n" +
-            "            <td><a href='#!'><img src='ico/refresh.svg' width='22'></a></td>\n" +
+            "            <td><a href='#!' title='Pingar novamente' onclick='refreshPing(this.parentNode.parentNode);'><img src='ico/refresh.svg' width='22'></a></td>\n" +
             "        </tr>";
         $("#linhasIPs").append(linha);
     }
@@ -140,6 +140,10 @@
             .fail(function(jqXHR, textStatus, msg){
                 $(colunas[2]).html("aguardando");
             });
+    }
+
+    function refreshPing(elemento) {
+        executaPing(elemento.children);
     }
 </script>
 
