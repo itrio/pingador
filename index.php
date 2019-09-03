@@ -1,56 +1,88 @@
 <html>
 <head>
-<link rel="stylesheet" href="vendor/materialize/css/materialize.min.css">
+    <link rel="stylesheet" href="vendor/materialize/css/materialize.min.css">
+
+    <style type="text/css">
+        .divRecolhida{
+            padding-right: 300px;
+        }
+    </style>
 </head>
 <body>
 
-<nav>
-    <div class="nav-wrapper blue">
-        <a href="#" class="brand-logo center">Pingador</a>
-    </div>
-</nav>
+<div id="divPrincipal">
+    <nav>
+        <div class="nav-wrapper blue">
+            <a href="#" class="brand-logo center">Pingador</a>
+            <ul id="nav-mobile" class="right">
+                <li><a href="#!" title="Configurações" onclick='btnConfigClick();' style="height: 100%;"><img src="ico/settings-white.png" width="30" style="margin-top: 18px;"></a></li>
+                <li><a href="#!" title="Baixar relatório" style="height: 100%;"><img src="ico/file-download-white.png" width="30" style="margin-top: 18px;"></a></li>
+            </ul>
+        </div>
+    </nav>
 
-<div class="container">
-    <div class="row">
-        <form class="col s12">
-            <div class="row">
-                <div class="col s12">
-                    <label for="textarea1">Insira os IPs que deseja pingar. Coloque um IP em cada linha.<br></label>
-                    <textarea id="txtIPs" rows="15"></textarea>
+    <div class="container">
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="col s12">
+                        <label for="textarea1">Insira os IPs que deseja pingar. Coloque um IP em cada linha.<br></label>
+                        <textarea id="txtIPs" rows="15"></textarea>
+                    </div>
+                    <div class="col s12">
+                        <a class="waves-effect waves-light btn blue" style="width: 100%; margin-top: 10px;" onclick="submitIPs();">PINGAR!</a>
+                    </div>
                 </div>
-                <div class="col s12">
-                    <a class="waves-effect waves-light btn blue" style="width: 100%; margin-top: 10px;" onclick="submitIPs();">PINGAR!</a>
-                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="" id="divTabela">
+        <table class="striped">
+            <thead>
+            <tr>
+                <th>Nº</th>
+                <th>IP</th>
+                <th>Status</th>
+                <th>Tempo</th>
+                <th><a href='#!' title='Atualizar tudo' onclick='refreshAll();'><img src='ico/refresh.svg' width='22'></a></th>
+                <th><a href='#!' title='Limpar tudo' onclick='clearAll();'><img src='ico/clear.svg' width='22'></a></th>
+            </tr>
+            </thead>
+
+            <tbody id="linhasIPs">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<ul id="slide-configs" class="sidenav sidenav-fixed" style="display: none;">
+    <li><div class="user-view">
+            <center><img src="ico/settings.svg" width="50"><br><b>CONFIGURAÇÕES</b></center>
+            <div class="divider"></div>
+        </div></li>
+    <li class="container">
+        <form action="#"><!--
+            <span>Número máximo de conexões:</span>
+            <p class="range-field">
+                <input type="range" id="test5" min="1" max="100" />
+            </p>-->
+            <div class="input-field col s12">
+                <input id="limitConex" type="number" min="1" max="100" value="30" onchange="atualizaLimitConn();" class="center-align">
+                <label for="limitConex" class="center-align">número máximo de conexões</label><label></label>
             </div>
         </form>
-    </div>
-</div>
-
-<div class="divider"></div>
-
-<div class="" id="divTabela">
-    <table class="striped">
-        <thead>
-        <tr>
-            <th>Nº</th>
-            <th>IP</th>
-            <th>Status</th>
-            <th>Tempo</th>
-            <th><a href='#!' title='Atualizar tudo' onclick='refreshAll();'><img src='ico/refresh.svg' width='22'></a></th>
-            <th><a href='#!' title='Limpar tudo' onclick='clearAll();'><img src='ico/clear.svg' width='22'></a></th>
-        </tr>
-        </thead>
-
-        <tbody id="linhasIPs">
-
-        </tbody>
-    </table>
-</div>
+    </li>
+</ul>
 
 </body>
 
 <script type="text/javascript" src="vendor/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="vendor/materialize/js/materialize.min.js"></script>
+<script type="text/javascript" src="js/cookies.js"></script>
 
 <script type="text/javascript">
     var preloader = "<div class=\"preloader-wrapper small active\" style='max-width: 15px; max-height: 15px;'>\n" +
@@ -64,8 +96,12 @@
         "      </div>\n" +
         "    </div>\n" +
         "  </div>";
+
+    //Conexões sendo realizadas
+    var conexoesSimultaneas = 0;
     
     $(document).ready(function() {
+        $('.sidenav').sidenav({edge:'right'});
         insereIP("<?php print $_SERVER["REMOTE_ADDR"] == "::1" ? "192.168.90.11" : $_SERVER["REMOTE_ADDR"]; ?>");
 
         setInterval(function () {
@@ -144,7 +180,7 @@
         jQuery.each(linhas, function (indice, elemento) {
             var colunas = elemento.children;
 
-            if($(colunas[2]).html() == "aguardando"){
+            if($(colunas[2]).html() == "aguardando" && conexoesSimultaneas < getLimiteConexoes()){
                 executaPing(colunas);
             }
         });
@@ -161,6 +197,7 @@
                 'ip' : ip,
             },
             beforeSend : function(){
+                conexoesSimultaneas++;
                 $(colunas[2]).html("conectando...");
             }
         })
@@ -176,9 +213,11 @@
                 else{
                     $(colunas[2]).html("aguardando");
                 }
+                conexoesSimultaneas--;
             })
             .fail(function(jqXHR, textStatus, msg){
                 $(colunas[2]).html("aguardando");
+                conexoesSimultaneas--;
             });
     }
 
@@ -217,6 +256,36 @@
             $(colunas[0]).html(i++);
 
         });
+    }
+    
+    function btnConfigClick() {
+        //Atualiza configurações
+        $("#limitConex").val(getLimiteConexoes());
+
+        if($('#divPrincipal').hasClass("divRecolhida")){
+            $('#slide-configs').hide();
+            $('#divPrincipal').removeClass("divRecolhida");
+        }
+        else{
+            $('#slide-configs').show();
+            $('#divPrincipal').addClass("divRecolhida");
+        }
+    }
+
+    function atualizaLimitConn() {
+        var novoLimite = $("#limitConex").val();
+        setCookie("limiteConexoes", novoLimite, 540320300);
+    }
+
+    function getLimiteConexoes() {
+        if(getCookie("limiteConexoes") > 0){
+            var limiteConexoes = getCookie("limiteConexoes");
+        }
+        else{
+            var limiteConexoes = 30;
+            setCookie("limiteConexoes", 30, 32000000);
+        }
+        return limiteConexoes;
     }
 </script>
 
