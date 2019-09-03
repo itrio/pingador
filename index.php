@@ -165,7 +165,20 @@
     }
     
     function clearLine(elemento) {
-        
+        $(elemento).detach();
+        atualizaIndices();
+    }
+    
+    function atualizaIndices() {
+        var linhas = $("#linhasIPs > tr");
+        var i = 1;
+
+        jQuery.each(linhas, function (indice, elemento) {
+            var colunas = elemento.children;
+
+            $(colunas[0]).html(i++);
+
+        });
     }
 </script>
 
