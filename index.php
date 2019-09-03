@@ -36,6 +36,7 @@
             <th>IP</th>
             <th>Status</th>
             <th>Tempo</th>
+            <th></th>
         </tr>
         </thead>
 
@@ -92,6 +93,7 @@
             "            <td>"+IP+"</td>\n" +
             "            <td>aguardando</td>\n" +
             "            <td>"+preloader+"</td>\n" +
+            "            <td><a href='#!'><img src='ico/refresh.svg' width='22'></a></td>\n" +
             "        </tr>";
         $("#linhasIPs").append(linha);
     }
@@ -125,12 +127,14 @@
             .done(function(msg){
                 if(msg.status == 'on'){
                     $(colunas[2]).html("<span class='green-text'><b>CONECTADO</b></span>");
+                    $(colunas[3]).html(""+msg.tempo+"");
                 }
                 else if(msg.status == 'off'){
                     $(colunas[2]).html("<span class='red-text'><b>NÃO CONECTADO</b></span>");
+                    $(colunas[3]).html("-");
                 }
                 else{
-                    $(colunas[2]).html("OFF");
+                    $(colunas[2]).html("aguardando");
                 }
             })
             .fail(function(jqXHR, textStatus, msg){
