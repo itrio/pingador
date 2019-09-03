@@ -36,7 +36,8 @@
             <th>IP</th>
             <th>Status</th>
             <th>Tempo</th>
-            <th></th>
+            <th><a href='#!' title='Atualizar tudo' onclick='refreshAll();'><img src='ico/refresh.svg' width='22'></a></th>
+            <th><a href='#!' title='Limpar tudo' onclick='clearAll();'><img src='ico/clear.svg' width='22'></a></th>
         </tr>
         </thead>
 
@@ -94,6 +95,7 @@
             "            <td>aguardando</td>\n" +
             "            <td>"+preloader+"</td>\n" +
             "            <td><a href='#!' title='Pingar novamente' onclick='refreshPing(this.parentNode.parentNode);'><img src='ico/refresh.svg' width='22'></a></td>\n" +
+            "            <td><a href='#!' title='Excluir linha' onclick='clearLine(this.parentNode.parentNode);'><img src='ico/clear.svg' width='22'></a></td>\n" +
             "        </tr>";
         $("#linhasIPs").append(linha);
     }
@@ -144,6 +146,26 @@
 
     function refreshPing(elemento) {
         executaPing(elemento.children);
+    }
+    
+    function refreshAll() {
+        var linhas = $("#linhasIPs > tr");
+
+        jQuery.each(linhas, function (indice, elemento) {
+            var colunas = elemento.children;
+
+            $(colunas[2]).html("aguardando");
+            $(colunas[3]).html(preloader);
+
+        });
+    }
+    
+    function clearAll() {
+        $("#linhasIPs").html("");
+    }
+    
+    function clearLine(elemento) {
+        
     }
 </script>
 
