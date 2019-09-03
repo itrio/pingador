@@ -75,29 +75,67 @@
     
     function submitIPs() {
         var IPs = $("#txtIPs").val().split(/\r?\n/);
+        var IPsInseridos = 0, IPsDuplicados = 0;
 
         jQuery.each(IPs, function (indice, elemento) {
             //Valida o IP e insere
             if(elemento != "" && elemento != " "){
-                insereIP(elemento);
+                if(insereIP(elemento)){
+                    IPsInseridos++;
+                }
+                else{
+                    IPsDuplicados++;
+                }
             }
         });
 
         //Limpa a textarea
         $("#txtIPs").val("");
+
+        //Emite Toasts
+        if(IPsInseridos == 1){
+            M.toast({html: 'Linha inserida!'});
+        }
+        else if(IPsInseridos > 1){
+            M.toast({html: IPsInseridos+' linhas inseridas!'});
+        }
+
+        if(IPsDuplicados == 1){
+            M.toast({html: 'Linha duplicada!'});
+        }
+        else if(IPsDuplicados > 1){
+            M.toast({html: IPsDuplicados+' linhas duplicadas!'});
+        }
+
     }
     
     function insereIP(IP) {
-        qntLinhas = $("#linhasIPs > tr").length + 1;
-        var linha = "<tr>\n" +
-            "            <td>"+qntLinhas+"</td>\n" +
-            "            <td>"+IP+"</td>\n" +
-            "            <td>aguardando</td>\n" +
-            "            <td>"+preloader+"</td>\n" +
-            "            <td><a href='#!' title='Pingar novamente' onclick='refreshPing(this.parentNode.parentNode);'><img src='ico/refresh.svg' width='22'></a></td>\n" +
-            "            <td><a href='#!' title='Excluir linha' onclick='clearLine(this.parentNode.parentNode);'><img src='ico/clear.svg' width='22'></a></td>\n" +
-            "        </tr>";
-        $("#linhasIPs").append(linha);
+        //Verifica se o IP já existe
+        var ipDuplicado = false;
+        var linhas = $("#linhasIPs > tr");
+        jQuery.each(linhas, function (indice, elemento) {
+            var colunas = elemento.children;
+            if($(colunas[1]).html() == IP){
+                ipDuplicado = true;
+            }
+        });
+
+        if(!ipDuplicado){
+            qntLinhas = $("#linhasIPs > tr").length + 1;
+            var linha = "<tr>\n" +
+                "            <td>"+qntLinhas+"</td>\n" +
+                "            <td>"+IP+"</td>\n" +
+                "            <td>aguardando</td>\n" +
+                "            <td>"+preloader+"</td>\n" +
+                "            <td><a href='#!' title='Pingar novamente' onclick='refreshPing(this.parentNode.parentNode);'><img src='ico/refresh.svg' width='22'></a></td>\n" +
+                "            <td><a href='#!' title='Excluir linha' onclick='clearLine(this.parentNode.parentNode);'><img src='ico/clear.svg' width='22'></a></td>\n" +
+                "        </tr>";
+            $("#linhasIPs").append(linha);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     function scanLines() {
