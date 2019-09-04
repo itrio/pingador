@@ -17,6 +17,7 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 ## Atenção!
 
 - A ferramenta executa explicitamente comandos batch. Portanto, o funcionamento em servidores que não operem em ambiente Windows provavelmente será comprometido.
+- Verifique se a função *exec()* não encontra-se desabilitada no arquivo *php.ini* do seu servidor. Essa função costuma estar desabilitada em servidores compartilhados por questões de segurança.
 
 ## Construído com
 
