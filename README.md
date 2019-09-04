@@ -2,6 +2,22 @@
 
 Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferramenta envia pacotes ICMP (pings) para cada um deles, indicando o estado e a latência de cada host.
 
+![](http://domokontrol.com.br/github/pingador1.png)
+> Você pode usar o **Pingador** com IPs ou domínios.
+
+## Como funciona?
+1. Você insere uma lista de IPs e/ou domínios e clica no botão *PINGAR!*
+2. Os IPs/domínios digitados aparecerão em uma tabela logo abaixo.
+3. Um ping será feito para cada IP/domínio digitado.
+4. O estado e a latência de cada host aparecerá no respectivo campo das colunas *status* e *tempo*.
+5. Você pode limpar todas as linhas da tabela ou apenas uma que não interesse mais.
+6. Você pode refazer o ping para todos os hosts da tabela ou para apenas um que você deseje atualizar.
+7. Um relatório em formato *.txt* poderá ser baixado para o seu computador contendo a lista de IPs/domínios que você inseriu e os respectivos *status*.
+
+## Atenção!
+
+- A ferramenta executa explicitamente comandos batch. Portanto, o funcionamento em servidores que não operem em ambiente Windows provavelmente será comprometido.
+
 ## Construído com
 
 * [jQuery](https://maven.apache.org/) - Biblioteca Javascript
