@@ -67,16 +67,30 @@
 <ul id="slide-configs" class="sidenav sidenav-fixed" style="display: none;">
     <li><div class="user-view">
             <center><img src="ico/settings.svg" width="50"><br><b>CONFIGURAÇÕES</b></center>
-            <div class="divider"></div>
         </div></li>
+    <li><div class="divider"></div></li>
     <li class="container">
-        <form action="#">
-            <div class="input-field col s12">
-                <input id="limitConex" type="number" min="1" max="100" value="30" onchange="atualizaLimitConn();" class="center-align">
-                <label for="limitConex" class="center-align">número máximo de conexões</label><label></label>
+        <div class="input-field col s12 center-align">
+            <small style="margin-bottom: -25px; padding: 0px; line-height: 5px;">PERMITIR LINHAS DUPLICADAS:</small>
+            <div class="switch">
+                <label>
+                    NÃO
+                    <input type="checkbox" id="checkPermiteDuplicadas" onchange="atualizaPermiteDuplicadas();">
+                    <span class="lever"></span>
+                    SIM
+                </label>
             </div>
-        </form>
+        </div>
     </li>
+    <li><div class="divider"></div></li>
+    <li class="container">
+        <div class="input-field col s12 center-align">
+            <small style="margin-bottom: -25px; padding: 0px; line-height: 15px;">NÚMERO MÁXIMO DE CONEXÕES SIMULTÂNEAS:</small>
+            <input id="limitConex" type="number" min="1" max="100" value="30" onchange="atualizaLimitConn();" class="center-align">
+        </div>
+    </li>
+    <li><div class="divider"></div></li>
+
 </ul>
 
 <!--Formulário Oculto-->
@@ -162,7 +176,7 @@
             }
         });
 
-        if(!ipDuplicado){
+        if(!ipDuplicado || getPermiteDuplicadas() == "true"){
             qntLinhas = $("#linhasIPs > tr").length + 1;
             var linha = "<tr>\n" +
                 "            <td>"+qntLinhas+"</td>\n" +
@@ -267,6 +281,7 @@
     function btnConfigClick() {
         //Atualiza configurações
         $("#limitConex").val(getLimiteConexoes());
+        if(getPermiteDuplicadas() == "true") $("#checkPermiteDuplicadas").prop('checked', true);
 
         if($('#divPrincipal').hasClass("divRecolhida")){
             $('#slide-configs').hide();
@@ -294,6 +309,22 @@
             setCookie("limiteConexoes", 30, 32000000);
         }
         return limiteConexoes;
+    }
+
+    function atualizaPermiteDuplicadas() {
+        var novoValor = $("#checkPermiteDuplicadas").is(':checked');
+        setCookie("permiteDuplicadas", novoValor, 540320300);
+    }
+
+    function getPermiteDuplicadas() {
+        if(getCookie("permiteDuplicadas") != undefined && getCookie("permiteDuplicadas") != ""){
+            var permiteDuplicadas = getCookie("permiteDuplicadas");
+        }
+        else{
+            var permiteDuplicadas = false;
+            setCookie("permiteDuplicadas", false, 32000000);
+        }
+        return permiteDuplicadas;
     }
     
     function btnDownloadClick() {
