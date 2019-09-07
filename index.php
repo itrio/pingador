@@ -90,12 +90,34 @@
         </div>
     </li>
     <li><div class="divider"></div></li>
+    <li class="container">
+        <div class="input-field col s12 center-align">
+            <small style="margin-bottom: -25px; padding: 0px; line-height: 15px;">NOME DO ARQUIVO DE EXPORTAÇÃO:</small>
+            <input id="nomeExport" type="text" value="testeIPs" onchange="atualizaFilename();" class="center-align">
+        </div>
+    </li>
+    <li><div class="divider"></div></li>
+    <li class="container">
+        <div class="input-field col s12 center-align">
+            <small style="margin-bottom: -25px; padding: 0px; line-height: 15px;">FORMATO DE EXPORTAÇÃO:</small>
+            <div class="input-field">
+                <select class="browser-default center" id="selectFiletype" name="selectFiletype" onchange="atualizaFiletype();">
+                    <option id="optTXT" value=".txt" selected>.txt</option>
+                    <option id="optXLSX" value=".xlsx">.xlsx</option>
+                    <option id="optPDF" value=".pdf" disabled title="Ainda não implementado">.pdf</option>
+                </select>
+            </div>
+        </div>
+    </li>
+    <li><div class="divider"></div></li>
 
 </ul>
 
 <!--Formulário Oculto-->
 <form id="formExport" name="formExport" method="post" action="export.php">
     <input type="hidden" id="txtLinhas" name="txtLinhas">
+    <input type="hidden" id="filetype" name="filetype" value=".txt">
+    <input type="hidden" id="filename" name="filename" value="testeIPs">
 </form>
 
 </body>
@@ -122,6 +144,7 @@
     
     $(document).ready(function() {
         $('.sidenav').sidenav({edge:'right'});
+        $('select').formSelect();
         insereIP("<?php print $_SERVER["REMOTE_ADDR"] == "::1" ? "192.168.90.11" : $_SERVER["REMOTE_ADDR"]; ?>");
 
         setInterval(function () {
@@ -279,9 +302,7 @@
     }
     
     function btnConfigClick() {
-        //Atualiza configurações
-        $("#limitConex").val(getLimiteConexoes());
-        if(getPermiteDuplicadas() == "true") $("#checkPermiteDuplicadas").prop('checked', true);
+        atualizaConfiguracoes();
 
         if($('#divPrincipal').hasClass("divRecolhida")){
             $('#slide-configs').hide();
@@ -292,6 +313,22 @@
             $('#slide-configs').show();
             $('#divPrincipal').addClass("divRecolhida");
             $('#fixadorNav').removeClass("navbar-fixed");
+        }
+    }
+
+    function atualizaConfiguracoes() {
+        $("#limitConex").val(getLimiteConexoes());
+        $("#nomeExport").val(getFilename());
+        if(getPermiteDuplicadas() == "true") $("#checkPermiteDuplicadas").prop('checked', true);
+
+        if(getFiletype() == ".txt"){
+            $("#optTXT").prop('selected', true);
+        }
+        else if(getFiletype() == ".xlsx"){
+            $("#optXLSX").prop('selected', true);
+        }
+        else if(getFiletype() == ".pdf"){
+            $("#optPDF").prop('selected', true);
         }
     }
 
@@ -326,6 +363,38 @@
         }
         return permiteDuplicadas;
     }
+
+    function atualizaFiletype() {
+        var novoFiletype = $("#selectFiletype").val();
+        setCookie("filetype", novoFiletype, 540320300);
+    }
+
+    function getFiletype() {
+        if(getCookie("filetype") == ".txt" || getCookie("filetype") == ".xlsx"){
+            var filetype = getCookie("filetype");
+        }
+        else{
+            var filetype = ".txt";
+            setCookie("filetype", ".txt", 32000000);
+        }
+        return filetype;
+    }
+
+    function atualizaFilename() {
+        var novoFilename = $("#nomeExport").val();
+        setCookie("filename", novoFilename, 540320300);
+    }
+
+    function getFilename() {
+        if(getCookie("filename") != undefined && getCookie("filename") != ""){
+            var filename = getCookie("filename");
+        }
+        else{
+            var filename = "testeIPs";
+            setCookie("filename", "testeIPs", 32000000);
+        }
+        return filename;
+    }
     
     function btnDownloadClick() {
         //Verifica se há alguma linha pendente
@@ -353,10 +422,12 @@
             jQuery.each(linhas, function (indice, elemento) {
                 var colunas = elemento.children;
 
-                strLinhas += $(colunas[0]).html()+","+$(colunas[1]).html()+","+$(colunas[2]).html()+","+$(colunas[3]).html()+";";
+                strLinhas += $(colunas[0]).html()+","+$(colunas[1]).html()+","+$(colunas[2]).html()+";";
             });
 
             $("#txtLinhas").val(strLinhas);
+            $("#filetype").val(getFiletype());
+            $("#filename").val(getFilename());
             $("#formExport").submit();
         }
     }

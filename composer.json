@@ -1,0 +1,14 @@
+{
+    "name": "itrio/pingador",
+    "description": "Um utilit\u0000rio ICMP para teste de disponibilidade e lat\u0000ncia de hosts.",
+    "authors": [
+        {
+            "name": "Itrio Netuno",
+            "email": "itrionet@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "phpoffice/phpspreadsheet": "dev-master"
+    }
+}
