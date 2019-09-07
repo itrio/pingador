@@ -12,7 +12,7 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 4. O estado e a latência de cada host aparecerá no respectivo campo das colunas *status* e *tempo*.
 5. Você pode limpar todas as linhas da tabela ou apenas uma que não interesse mais.
 6. Você pode refazer o ping para todos os hosts da tabela ou para apenas um que você deseje atualizar.
-7. Um relatório em formato *.txt* poderá ser baixado para o seu computador contendo a lista de IPs/domínios que você inseriu e os respectivos *status*.
+7. Um relatório em formato *.txt* ou *.xlsx* poderá ser baixado para o seu computador contendo a lista de IPs/domínios que você inseriu e os respectivos *status*.
 
 ## Atenção!
 
@@ -23,6 +23,7 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 
 * [jQuery](https://maven.apache.org/) - Biblioteca Javascript
 * [Materialize](https://github.com/Dogfalo/materialize) - Framework CSS baseado em Material Design
+* [PhpSpreadsheet](https://github.com/PHPOffice/PhpSpreadsheet) - Biblioteca para leitura e escrita de arquivos
 
 ## Autor
 
