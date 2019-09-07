@@ -63,8 +63,8 @@ function exportXLSX($txt, $filename){
         }
 
     }
-    //$spreadsheet->setActiveSheetIndex(0)->setCellValue('D5', 'world!');
-
+    $spreadsheet->getActiveSheet()->getColumnDimension("A")->setAutoSize(true);
+    $spreadsheet->getActiveSheet()->getColumnDimension("B")->setAutoSize(true);
 
     $spreadsheet->getActiveSheet()->setTitle('Disponibilidade dos Hosts');
 
