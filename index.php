@@ -1,6 +1,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="vendor/materialize/css/materialize.min.css">
+    <!--<link rel="stylesheet" href="vendor/datatables/datatables/media/css/dataTables.jqueryui.min.css">-->
     <link rel="shortcut icon" href="ico/ico.png" id="favicon" />
 
     <title>Pingador - Utilitário ICMP</title>
@@ -45,12 +46,13 @@
     <div class="divider"></div>
 
     <div class="" id="divTabela">
-        <table class="striped">
+        <table class="striped" id="tableHosts">
             <thead>
             <tr>
                 <th>Nº</th>
                 <th>IP</th>
                 <th>Status</th>
+                <th>Tempo</th>
                 <th>Tempo</th>
                 <th><a href='#!' title='Atualizar tudo' onclick='refreshAll();'><img src='ico/refresh.svg' width='22'></a></th>
                 <th><a href='#!' title='Limpar tudo' onclick='clearAll();'><img src='ico/clear.svg' width='22'></a></th>
@@ -61,6 +63,7 @@
 
             </tbody>
         </table>
+        <br><br>
     </div>
 </div>
 
@@ -124,6 +127,7 @@
 
 <script type="text/javascript" src="vendor/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="vendor/materialize/js/materialize.min.js"></script>
+<script type="text/javascript" src="vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="js/cookies.js"></script>
 
 <script type="text/javascript">
@@ -141,16 +145,57 @@
 
     //Conexões sendo realizadas
     var conexoesSimultaneas = 0;
+
+    //Instância da Tabela
+    var tabelaHosts;
     
     $(document).ready(function() {
         $('.sidenav').sidenav({edge:'right'});
         $('select').formSelect();
+        iniciaDataTables();
         insereIP("<?php print $_SERVER["REMOTE_ADDR"] == "::1" ? "192.168.90.11" : $_SERVER["REMOTE_ADDR"]; ?>");
 
         setInterval(function () {
             scanLines();
         }, 1000);
     });
+
+    function iniciaDataTables() {
+        tabelaHosts = $('#tableHosts').DataTable({
+            "language":  {
+                "sEmptyTable": "<center>Nenhum host listado</center>",
+                "sInfo": "<small class='right'>mostrando de _START_ até _END_ de _TOTAL_ hosts</small>",
+                "sInfoEmpty": "<small class='right'>mostrando 0 até 0 de 0 hosts</small>",
+                "sInfoFiltered": "(Filtrados de _MAX_ hosts)",
+                "sInfoPostFix": "",
+                "sInfoThousands": ".",
+                "sLengthMenu": "_MENU_ resultados por página",
+                "sLoadingRecords": "Carregando...",
+                "sProcessing": "Processando...",
+                "sZeroRecords": "Nenhum host listado",
+                "sSearch": "Pesquisar",
+                "oPaginate": {
+                    "sNext": "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+                },
+                "oAria": {
+                    "sSortAscending": ": Ordenar colunas de forma ascendente",
+                    "sSortDescending": ": Ordenar colunas de forma descendente"
+                }
+            },
+            "lengthMenu": [[-1], ["todos"]],
+            'sDom': 'lrti',
+            'ordering': true,
+            "lengthChange": false,
+            "order": [[ 0, 'asc' ]],
+            "columnDefs": [
+                { "targets": [ 4 ], "visible": false, },
+                { "orderSequence": [ "desc", "asc" ], "targets": [ 0, 1, 2, 3, 4, 5 ] }
+            ],
+        });
+    }
     
     function submitIPs() {
         var IPs = $("#txtIPs").val().split(/\r?\n/);
@@ -200,16 +245,16 @@
         });
 
         if(!ipDuplicado || getPermiteDuplicadas() == "true"){
-            qntLinhas = $("#linhasIPs > tr").length + 1;
-            var linha = "<tr>\n" +
-                "            <td>"+qntLinhas+"</td>\n" +
-                "            <td>"+IP+"</td>\n" +
-                "            <td>aguardando</td>\n" +
-                "            <td>"+preloader+"</td>\n" +
-                "            <td><a href='#!' title='Pingar novamente' onclick='refreshPing(this.parentNode.parentNode);'><img src='ico/refresh.svg' width='22'></a></td>\n" +
-                "            <td><a href='#!' title='Excluir linha' onclick='clearLine(this.parentNode.parentNode);'><img src='ico/clear.svg' width='22'></a></td>\n" +
-                "        </tr>";
-            $("#linhasIPs").append(linha);
+            qntLinhas = tabelaHosts.rows()[0].length + 1;
+            tabelaHosts.row.add( [
+                qntLinhas,
+                IP,
+                'aguardando',
+                preloader,
+                "",
+                '<a href=\'#!\' title=\'Pingar novamente\' onclick=\'refreshPing(this.parentNode.parentNode);\'><img src=\'ico/refresh.svg\' width=\'22\'></a>',
+                '<a href=\'#!\' title=\'Excluir linha\' onclick=\'clearLine(this.parentNode.parentNode);\'><img src=\'ico/clear.svg\' width=\'22\'></a>'
+            ]).draw(true);
             return true;
         }
         else {
@@ -218,86 +263,86 @@
     }
     
     function scanLines() {
-        var linhas = $("#linhasIPs > tr");
-
-        jQuery.each(linhas, function (indice, elemento) {
-            var colunas = elemento.children;
-
-            if($(colunas[2]).html() == "aguardando" && conexoesSimultaneas < getLimiteConexoes()){
-                executaPing(colunas);
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            if(tabelaHosts.cell(rowIdx, 2).data() == "aguardando" && conexoesSimultaneas < getLimiteConexoes()){
+                executaPing(rowIdx);
             }
         });
     }
     
-    function executaPing(colunas) {
-        var ip = $(colunas[1]).html();
+    function executaPing(rowIdx) {
+        var ip = tabelaHosts.cell(rowIdx, 1).data();
 
         $.ajax({
             'url' : 'api/ping.php',
             type : 'get',
             crossDomain : true,
             data : {
-                'ip' : ip,
+                'ip': ip,
             },
             beforeSend : function(){
                 conexoesSimultaneas++;
-                $(colunas[2]).html("conectando...");
+                tabelaHosts.cell(rowIdx, 2).data("conectando...")
+                    .draw();
             }
         })
             .done(function(msg){
                 if(msg.status == 'on'){
-                    $(colunas[2]).html("<span class='green-text'><b>CONECTADO</b></span>");
-                    $(colunas[3]).html(""+msg.tempo+"");
+                    tabelaHosts.cell(rowIdx, 2).data("<span class='green-text'><b>CONECTADO</b></span>");
+                    tabelaHosts.cell(rowIdx, 3).data(msg.tempo);
+                    tabelaHosts.cell(rowIdx, 4).data(limpaTempo(msg.tempo))
+                        .draw();
                 }
                 else if(msg.status == 'off'){
-                    $(colunas[2]).html("<span class='red-text'><b>NÃO CONECTADO</b></span>");
-                    $(colunas[3]).html("-");
+                    tabelaHosts.cell(rowIdx, 2).data("<span class='red-text'><b>NÃO CONECTADO</b></span>");
+                    tabelaHosts.cell(rowIdx, 3).data("-");
+                    tabelaHosts.cell(rowIdx, 4).data("-")
+                        .draw();
                 }
                 else{
-                    $(colunas[2]).html("aguardando");
+                    tabelaHosts.cell(rowIdx, 2).data("aguardando")
+                        .draw();
                 }
                 conexoesSimultaneas--;
             })
             .fail(function(jqXHR, textStatus, msg){
-                $(colunas[2]).html("aguardando");
+                tabelaHosts.cell(rowIdx, 2).data("aguardando")
+                    .draw();
                 conexoesSimultaneas--;
             });
     }
 
     function refreshPing(elemento) {
-        executaPing(elemento.children);
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            if(elemento.children[1].innerHTML == tabelaHosts.cell(rowIdx, 1).data()){
+                executaPing(rowIdx);
+            }
+        });
     }
     
     function refreshAll() {
-        var linhas = $("#linhasIPs > tr");
-
-        jQuery.each(linhas, function (indice, elemento) {
-            var colunas = elemento.children;
-
-            $(colunas[2]).html("aguardando");
-            $(colunas[3]).html(preloader);
-
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            tabelaHosts.cell(rowIdx, 2).data("aguardando");
+            tabelaHosts.cell(rowIdx, 3).data(preloader);
         });
     }
     
     function clearAll() {
-        $("#linhasIPs").html("");
+        tabelaHosts.rows().remove().draw();
     }
     
     function clearLine(elemento) {
-        $(elemento).detach();
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            if(elemento.children[1].innerHTML == tabelaHosts.cell(rowIdx, 1).data()){
+                tabelaHosts.row(rowIdx).remove().draw();
+            }
+        });
         atualizaIndices();
     }
     
     function atualizaIndices() {
-        var linhas = $("#linhasIPs > tr");
-        var i = 1;
-
-        jQuery.each(linhas, function (indice, elemento) {
-            var colunas = elemento.children;
-
-            $(colunas[0]).html(i++);
-
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            tabelaHosts.cell(rowIdx, 0).data(rowIdx+1);
         });
     }
     
@@ -430,6 +475,17 @@
             $("#filename").val(getFilename());
             $("#formExport").submit();
         }
+    }
+
+    function limpaTempo(strOriginal) {
+        var str;
+
+        str = strOriginal.replace("=", "");
+        str = str.replace(">", "");
+        str = str.replace("<", "");
+        str = str.replace("ms", "");
+
+        return str;
     }
 </script>
 

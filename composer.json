@@ -9,6 +9,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "phpoffice/phpspreadsheet": "dev-master"
+        "phpoffice/phpspreadsheet": "dev-master",
+        "datatables/datatables": "dev-master"
     }
 }
