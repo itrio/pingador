@@ -396,6 +396,21 @@
     function atualizaPermiteDuplicadas() {
         var novoValor = $("#checkPermiteDuplicadas").is(':checked');
         setCookie("permiteDuplicadas", novoValor, 540320300);
+
+        if(novoValor == false && getQntLinhasDuplicadas() > 0){
+            var confirmacao = confirm("Deseja apagar as linhas duplicadas?");
+
+            if(confirmacao){
+                var qntLinhasApagadas = apagaLinhasDuplicadas();
+
+                if(qntLinhasApagadas == 1){
+                    M.toast({html: 'Uma linha foi apagada.'});
+                }
+                else{
+                    M.toast({html: qntLinhasApagadas+' linhas foram apagadas.'});
+                }
+            }
+        }
     }
 
     function getPermiteDuplicadas() {
@@ -407,6 +422,44 @@
             setCookie("permiteDuplicadas", false, 32000000);
         }
         return permiteDuplicadas;
+    }
+
+    function getQntLinhasDuplicadas() {
+        var hosts = Array();
+        var qntLinhasDuplicadas = 0;
+
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            if(hosts.includes(tabelaHosts.cell(rowIdx, 1).data())){
+                qntLinhasDuplicadas++;
+            }
+            else{
+                hosts.push(tabelaHosts.cell(rowIdx, 1).data());
+            }
+        });
+
+        return qntLinhasDuplicadas;
+    }
+
+    function apagaLinhasDuplicadas() {
+        var hosts = Array();
+        var qntLinhasApagadas = 0;
+        var ordemAnterior = tabelaHosts.order()[0];
+
+        tabelaHosts.order([0, 'asc']).draw();
+        tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            if(hosts.includes(tabelaHosts.cell(rowIdx - qntLinhasApagadas, 1).data())){
+                tabelaHosts.row(rowIdx - qntLinhasApagadas).remove().draw();
+                atualizaIndices();
+                qntLinhasApagadas++;
+            }
+            else{
+                hosts.push(tabelaHosts.cell(rowIdx - qntLinhasApagadas, 1).data());
+            }
+        });
+
+        tabelaHosts.order(ordemAnterior).draw();
+
+        return qntLinhasApagadas;
     }
 
     function atualizaFiletype() {
