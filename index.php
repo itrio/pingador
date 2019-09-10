@@ -314,8 +314,9 @@
 
     function refreshPing(elemento) {
         tabelaHosts.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
-            if(elemento.children[1].innerHTML == tabelaHosts.cell(rowIdx, 1).data()){
-                executaPing(rowIdx);
+            if(elemento.children[0].innerHTML == tabelaHosts.cell(rowIdx, 0).data()){
+                tabelaHosts.cell(rowIdx, 2).data("aguardando");
+                tabelaHosts.cell(rowIdx, 3).data(preloader);
             }
         });
     }

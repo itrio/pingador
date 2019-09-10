@@ -24,6 +24,7 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 * [jQuery](https://maven.apache.org/) - Biblioteca Javascript
 * [Materialize](https://github.com/Dogfalo/materialize) - Framework CSS baseado em Material Design
 * [PhpSpreadsheet](https://github.com/PHPOffice/PhpSpreadsheet) - Biblioteca para leitura e escrita de arquivos
+* [DataTables](https://github.com/DataTables/DataTables) - Biblioteca para gerenciamento de tabelas
 
 ## Autor
 
