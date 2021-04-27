@@ -6,7 +6,7 @@ exec("ping ".$ip." -n 1", $output, $result);
 
 if(isset($output[2])){
     $resultado["linha"] = utf8_encode($output[2]);
-    if(strpos($resultado["linha"], "TTL") === FALSE || strpos($resultado["linha"], "tempo") === FALSE){
+    if(strpos($resultado["linha"], "Resposta") === FALSE || strpos($resultado["linha"], "tempo") === FALSE){
         $resultado["status"] = "off";
     }
     else{

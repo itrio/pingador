@@ -189,6 +189,7 @@
             'sDom': 'lrti',
             'ordering': true,
             "lengthChange": false,
+            "responsive": true,
             "order": [[ 0, 'asc' ]],
             "columnDefs": [
                 { "targets": [ 4 ], "visible": false, },
