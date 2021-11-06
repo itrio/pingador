@@ -2,25 +2,27 @@
 
 $ip = $_GET["ip"];
 
-exec("ping ".$ip." -n 1", $output, $result);
+switch(PHP_OS){
+    case 'WINNT':
+        exec("ping ".$ip." -n 1", $output, $result);
+        break;
+    
+    case 'Linux':
+        exec("ping ".$ip." -c 1", $output, $result);
+        break;
+}
 
-if(isset($output[2])){
-    $resultado["linha"] = utf8_encode($output[2]);
-    if(strpos($resultado["linha"], "Resposta") === FALSE || strpos($resultado["linha"], "tempo") === FALSE){
-        $resultado["status"] = "off";
-    }
-    else{
-        $resultado["status"] = "on";
-        $tempo = explode("tempo", $resultado["linha"]);
-        $tempo = explode(" ", $tempo[1]);
-        $resultado["tempo"] = $tempo[0];
-    }
+$saida = implode(" ", $output);
 
+preg_match('/(?:tempo|time)((=|<)\w*)\b/', $saida, $matches);
+
+if($matches){
+    $resultado["status"] = "on";
+    $resultado["tempo"] = $matches[1];
 }
 else{
     $resultado["status"] = "off";
 }
-
 
 header('Content-Type: application/json');
 print json_encode($resultado);
