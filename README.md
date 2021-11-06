@@ -2,7 +2,7 @@
 
 Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferramenta envia pacotes ICMP (pings) para cada um deles, indicando o estado e a latência de cada host.
 
-![](http://domokontrol.com.br/github/pingador1.png)
+![](screenshots/index.png)
 > Você pode usar o **Pingador** com IPs ou domínios.
 
 ## Como funciona?
@@ -18,6 +18,21 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 
 - A ferramenta executa explicitamente comandos batch. Portanto, o funcionamento em servidores que não operem em ambiente Windows provavelmente será comprometido.
 - Verifique se a função *exec()* não encontra-se desabilitada no arquivo *php.ini* do seu servidor. Essa função costuma estar desabilitada em servidores compartilhados por questões de segurança.
+
+## Instalação
+1. Clone o repositório:
+~~~~
+$ git clone git@github.com:itrio/pingador.git
+~~~~
+2. Navegue até a pasta de instalação e rode o composer:
+~~~~
+$ cd pingador
+$ composer install
+~~~~
+3. Inicialize o seu servidor PHP e acesse o Pingador:
+~~~~
+http://localhost/pingador
+~~~~
 
 ## Construído com
 
