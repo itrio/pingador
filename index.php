@@ -1,7 +1,8 @@
 <html>
 <head>
-    <link rel="stylesheet" href="vendor/materialize/css/materialize.min.css">
-    <!--<link rel="stylesheet" href="vendor/datatables/datatables/media/css/dataTables.jqueryui.min.css">-->
+    <!-- Importing Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    
     <link rel="shortcut icon" href="ico/ico.png" id="favicon" />
 
     <title>Pingador - Utilitário ICMP</title>
@@ -125,9 +126,16 @@
 
 </body>
 
-<script type="text/javascript" src="vendor/jquery/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="vendor/materialize/js/materialize.min.js"></script>
-<script type="text/javascript" src="vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
+<!-- Importing jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Importing DataTables -->
+<script type="text/javascript" src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+<!-- Importing Materialize scripts -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<!-- Importing Pingador scripts -->
 <script type="text/javascript" src="js/cookies.js"></script>
 
 <script type="text/javascript">
