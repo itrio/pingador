@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     
     <link rel="shortcut icon" href="ico/ico.png" id="favicon" />
-
     <title>Pingador - Utilitário ICMP</title>
 
     <style type="text/css">
@@ -30,24 +29,20 @@
 
     <div class="container">
         <div class="row">
-            <form class="col s12">
-                <div class="row">
-                    <div class="col s12">
-                        <label for="textarea1">Insira os IPs ou domínios que deseja pingar. Coloque um IP em cada linha.<br></label>
-                        <textarea id="txtIPs" rows="15"></textarea>
-                    </div>
-                    <div class="col s12">
-                        <a class="waves-effect waves-light btn blue" style="width: 100%; margin-top: 10px;" onclick="submitIPs();">PINGAR!</a>
-                    </div>
-                </div>
-            </form>
+            <div class="col s12">
+                <label for="textarea1">Insira os IPs ou domínios para os quais deseja pingar. Coloque um IP em cada linha.<br></label>
+                <textarea id="txtIPs" rows="15"></textarea>
+            </div>
+            <div class="col s12">
+                <a class="waves-effect waves-light btn blue" style="width: 100%; margin-top: 10px;" onclick="submitIPs();">PINGAR!</a>
+            </div>
         </div>
     </div>
 
     <div class="divider"></div>
 
-    <div class="" id="divTabela">
-        <table class="striped" id="tableHosts">
+    <div id="divTabela">
+        <table class="striped" id="tableHosts" style="width: 100%;">
             <thead>
             <tr>
                 <th>Nº</th>
@@ -197,7 +192,6 @@
             'sDom': 'lrti',
             'ordering': true,
             "lengthChange": false,
-            "responsive": true,
             "order": [[ 0, 'asc' ]],
             "columnDefs": [
                 { "targets": [ 4 ], "visible": false, },
