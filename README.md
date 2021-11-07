@@ -42,6 +42,22 @@ $ composer install
 http://localhost/pingador
 ~~~~
 
+## Instalação com Docker
+Esta aplicação também pode ser servida por um container docker.
+
+1. Faça o build da imagem:
+~~~~
+$ docker build https://github.com/itrio/pingador.git -t itrio/pingador
+~~~~
+2. Crie um container a partir da imagem:
+~~~~
+$ docker run -d -p 80:80 --name pingador itrio/pingador
+~~~~
+3. Acesse através do navegador:
+~~~~
+http://localhost
+~~~~
+
 ## Construído com
 
 * [jQuery](https://maven.apache.org/) - Biblioteca Javascript
