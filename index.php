@@ -523,7 +523,7 @@
             M.toast({html: 'Aguarde todas as linhas serem testadas e clique novamente!'});
             return false;
         }
-        else if($("#linhasIPs > tr").length == 0){
+        else if($("#linhasIPs > tr").length == 1){
             M.toast({html: 'Não há nada para exportar!'});
             return false;
         }
