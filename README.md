@@ -6,7 +6,7 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 > Você pode usar o **Pingador** com IPs ou domínios.
 
 ## Como funciona?
-1. Você insere uma lista de IPs e/ou domínios e clica no botão *PINGAR!*
+1. Você insere uma lista de IPs, domínios ou rede e clica no botão *PINGAR!*
 2. Os IPs/domínios digitados aparecerão em uma tabela logo abaixo.
 3. Um ping será feito para cada IP/domínio digitado.
 4. O estado e a latência de cada host aparecerá no respectivo campo das colunas *status* e *tempo*.
@@ -14,9 +14,17 @@ Um simples utilitário ICMP. Você insere uma lista de IPs ou domínios e a ferr
 6. Você pode refazer o ping para todos os hosts da tabela ou para apenas um que você deseje atualizar.
 7. Um relatório em formato *.txt* ou *.xlsx* poderá ser baixado para o seu computador contendo a lista de IPs/domínios que você inseriu e os respectivos *status*.
 
+Entradas permitidas:
+
+| Tipo          |      Exemplo         |                      Descrição                           |
+|---------------|----------------------|----------------------------------------------------------|
+| IPv4          |  162.241.203.251     | O IP especificado será incluido na tabela de hosts       |
+| IPv6          | 2001:4860:4860::8888 | O IP especificado será incluido na tabela de hosts       |
+| IPv4 com CIDR | 192.168.1.0/24       | Todos os IPs da rede serão incluídos na tabela de hosts  |
+| Domínio       | google.com.br        | O domínio especificado será incluído na tabela de hosts  |
+
 ## Atenção!
 
-- A ferramenta executa explicitamente comandos batch. Portanto, o funcionamento em servidores que não operem em ambiente Windows provavelmente será comprometido.
 - Verifique se a função *exec()* não encontra-se desabilitada no arquivo *php.ini* do seu servidor. Essa função costuma estar desabilitada em servidores compartilhados por questões de segurança.
 
 ## Instalação

@@ -132,6 +132,7 @@
 
 <!-- Importing Pingador scripts -->
 <script type="text/javascript" src="js/cookies.js"></script>
+<script type="text/javascript" src="js/CIDR.js"></script>
 
 <script type="text/javascript">
     var preloader = "<div class=\"preloader-wrapper small active\" style='max-width: 15px; max-height: 15px;'>\n" +
@@ -207,7 +208,16 @@
         jQuery.each(IPs, function (indice, elemento) {
             //Valida o IP e insere
             if(elemento != "" && elemento != " "){
-                if(insereIP(elemento)){
+                var testaCIDR = new CIDR(elemento);
+                if(testaCIDR.isValid()){
+                    ips = testaCIDR.getIPs();
+
+                    ips.forEach(ip => {
+                        insereIP(ip);
+                        IPsInseridos++;
+                    });
+                }
+                else if(insereIP(elemento)){
                     IPsInseridos++;
                 }
                 else{
